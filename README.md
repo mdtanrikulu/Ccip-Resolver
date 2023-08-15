@@ -106,3 +106,16 @@ Ccip Resolver: 0xaeB973dA621Ed58F0D8bfD6299031E8a2Ac39FD4
 #### Optimism Verifier
 
 BedrockProofVerifier : 0x2231dA800580E27cAA4C45C43b2B6c1D1487eC6F
+
+### Deployment to Cloud Run;
+```bash
+gcloud auth login # do CLI login to your gcp if you haven't
+gcloud auth configure-docker # let gcloud automatically configure your docker for it's own registry
+docker build --platform linux/amd64 -t gcr.io/[YOUR_GCP_PROJECT_ID]/ccip-resolver -f ./Dockerfile.bundle . # keep platform flag, especially for Apple M1
+docker push gcr.io/[YOUR_GCP_PROJECT_ID]/ccip-resolver # do not forget to update project id
+```
+- `env` variables or `.env` file is not supported atm for the simplicity, please change/update any env variables directly in `Dockerfile.bundle` file.
+- Go to container registry under your project id in GCP
+- Click to the image folder and image itself, you'll see deploy options above image details
+- Be sure port is 8081 when deploying into the Run.
+- (optional) to avoid cold start time, you can set "Minimum number of instances" as 1, under autoscaling options.
